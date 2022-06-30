@@ -5,12 +5,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 username = 'daishuai'
-passowrd = '1561696334dai'
+password = '1561696334dai'
 
 browser = webdriver.Chrome(executable_path=r'D:\PycharmProjects\first-python\venv\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe')
 browser.get('http://172.16.0.124/')
 browser.find_element(value='UQ0_0').send_keys(username)     # 输入用户名
-browser.find_element(value='UQ0_1').send_keys(passowrd)     # 输入密码
+browser.find_element(value='UQ0_1').send_keys(password)     # 输入密码
 browser.find_element(by=By.TAG_NAME, value='button').click()    # 点击登录
 browser.find_element(by=By.LINK_TEXT, value='Audit').click()    # 点击Audit
 ul_elements = browser.find_element(value='UQ0_71').find_elements(by=By.TAG_NAME, value='ul')
