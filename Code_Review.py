@@ -1,13 +1,14 @@
 import time
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 username = 'daishuai'
 password = '1561696334dai'
-
-browser = webdriver.Chrome(executable_path=r'D:\PycharmProjects\first-python\venv\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe')
+service = Service(r'D:\PycharmProjects\first-python\venv\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe')
+browser = webdriver.Chrome(service=service)
 browser.get('http://172.16.0.124/')
 browser.find_element(value='UQ0_0').send_keys(username)     # 输入用户名
 browser.find_element(value='UQ0_1').send_keys(password)     # 输入密码
