@@ -7,7 +7,7 @@ from selenium.webdriver.support.select import Select
 
 username = 'daishuai'
 password = '1561696334dai'
-service = Service(r'D:\PycharmProjects\first-python\venv\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe')
+service = Service(r'chromedriver.exe')
 browser = webdriver.Chrome(service=service)
 browser.get('http://172.16.0.124/')
 browser.find_element(value='UQ0_0').send_keys(username)     # 输入用户名
