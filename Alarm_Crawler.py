@@ -31,7 +31,7 @@ data_str = get_data(url)
 data_json = json.loads(re.search(r'({.*})', data_str).group())
 count = data_json['count']
 data = data_json['data']
-detail_url = 'http://www.weather.com.cn/alarm/newalarmcontent.shtml?file={}'
+detail_url = 'http://product.weather.com.cn/alarm/webdata/{}?_={}'
 for d in data:
     title = d[0]
     url = d[1]
@@ -43,4 +43,6 @@ for d in data:
     region_ex = d[5]
     print('title: {}, url: {}, longitude: {}, latitude: {}, region: {}, region_ex: {}'
           .format(title, url, longitude, latitude, region, region_ex))
+    detail_str = get_data(detail_url.format(url, timestamp))
+    print(detail_str)
     break
