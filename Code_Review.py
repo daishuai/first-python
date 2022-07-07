@@ -44,3 +44,6 @@ def auto_code_review(username, password):
             li_elements = ul_elements[2].find_elements(by=By.CLASS_NAME, value='phui-oi-standard')
         cnt = len(li_elements)
     browser.close()
+
+
+auto_code_review('youliyong', 'sz123456')
