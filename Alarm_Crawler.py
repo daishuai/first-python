@@ -31,6 +31,7 @@ data_str = get_data(url)
 data_json = json.loads(re.search(r'({.*})', data_str).group())
 count = data_json['count']
 data = data_json['data']
+print('count: {}'.format(count))
 detail_url = 'http://product.weather.com.cn/alarm/webdata/{}?_={}'
 for d in data:
     title = d[0]
@@ -45,4 +46,7 @@ for d in data:
           .format(title, url, longitude, latitude, region, region_ex))
     detail_str = get_data(detail_url.format(url, timestamp))
     print(detail_str)
-    break
+    detail_str = re.search(r'alarminfo=({.*})', detail_str).group(1)
+    detail_json = json.loads(detail_str)
+    print(detail_json)
+    #break
