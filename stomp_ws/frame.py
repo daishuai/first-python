@@ -29,7 +29,9 @@ class Frame:
 
     @staticmethod
     def unmarshall_single(data):
-        print(data)
+        if data == Byte['LF']:
+            print('Server Heartbeat!')
+            return Frame('HEARTBEAT', {}, None)
         lines = data.split(Byte['LF'])
         command = lines[0].strip()
         headers = {}

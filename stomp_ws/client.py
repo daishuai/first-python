@@ -1,14 +1,16 @@
 import json
 import logging
 import time
-import traceback
 from threading import Thread
 
 import websocket
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from .frame import Frame
 
 VERSIONS = '1.0,1.1'
+
+scheduler = None
 
 
 class Client:
@@ -34,7 +36,7 @@ class Client:
 
     def _connect(self, timeout=0):
         thread = Thread(target=self.ws.run_forever)
-        thread.daemon = True
+        thread.daemon = False
         thread.start()
 
         total_ms = 0
@@ -47,6 +49,10 @@ class Client:
     def _on_open(self, ws_app, *args):
         self.opened = True
 
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(self.heartbeat, 'interval', seconds=10)
+        scheduler.start()
+
     def _on_close(self, ws_app, *args):
         self.connected = False
         logging.debug("Whoops! Lost connection to " + self.ws.url)
@@ -54,7 +60,6 @@ class Client:
 
     def _on_error(self, ws_app, error, *args):
         logging.debug(error)
-        traceback.print_exc(error)
 
     def _on_message(self, ws_app, message, *args):
         logging.debug("\n<<< " + str(message))
@@ -75,23 +80,25 @@ class Client:
             subscription = frame.headers['subscription']
             print(subscription)
             if subscription in self.subscriptions:
-                onreceive = self.subscriptions[subscription]
-                messageID = frame.headers['message-id']
+                on_receive = self.subscriptions[subscription]
+                if on_receive is None:
+                    return _results
+                message_id = frame.headers['message-id']
 
                 def ack(headers):
                     if headers is None:
                         headers = {}
-                    return self.ack(messageID, subscription, headers)
+                    return self.ack(message_id, subscription, headers)
 
                 def nack(headers):
                     if headers is None:
                         headers = {}
-                    return self.nack(messageID, subscription, headers)
+                    return self.nack(message_id, subscription, headers)
 
                 frame.ack = ack
                 frame.nack = nack
 
-                _results.append(onreceive(frame))
+                _results.append(on_receive(frame))
             else:
                 info = "Unhandled received MESSAGE: " + str(frame)
                 logging.debug(info)
@@ -174,7 +181,13 @@ class Client:
 
         return headers["id"], unsubscribe
 
+    def heartbeat(self):
+        payload = ['\n']
+        self.ws.send(json.dumps(payload))
+        logging.debug('Send Heartbeat')
+
     def unsubscribe(self, id):
+        logging.debug(f'Unsubscribe {id}')
         del self.subscriptions[id]
         return self._transmit("UNSUBSCRIBE", {
             "id": id
