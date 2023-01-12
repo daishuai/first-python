@@ -49,9 +49,9 @@ class Client:
     def _on_open(self, ws_app, *args):
         self.opened = True
 
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(self.heartbeat, 'interval', seconds=10)
-        scheduler.start()
+        _scheduler = BackgroundScheduler()
+        _scheduler.add_job(self._heartbeat, 'interval', seconds=10)
+        _scheduler.start()
 
     def _on_close(self, ws_app, *args):
         self.connected = False
@@ -181,7 +181,7 @@ class Client:
 
         return headers["id"], unsubscribe
 
-    def heartbeat(self):
+    def _heartbeat(self):
         payload = ['\n']
         self.ws.send(json.dumps(payload))
         logging.debug('Send Heartbeat')

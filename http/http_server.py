@@ -45,7 +45,7 @@ async def websocket_connect():
         'onDisconnectTopic': '/disconnectTopic'
     }
     client.connect(headers=headers)
-    client.subscribe(destination='/user/queue/VOICE_BROADCAST_TIPS/systemConfigByCode/pong', callback=on_receive)
+    client.subscribe(destination='/user/75dd6aefbf3c43e69fe3b90b6f0ec4d4/allMessageBus/pong', callback=on_receive)
     executors = {
         'default': {'type': 'threadpool', 'max_workers': 5},  # 最大工作线程数5
         'processpool': ProcessPoolExecutor(max_workers=2)  # 最大工作进程数为2
@@ -53,9 +53,6 @@ async def websocket_connect():
     global scheduler
     scheduler = AsyncIOScheduler()
     scheduler.configure(executors=executors)
-    # 添加心跳任务
-    scheduler.add_job(client.heartbeat, 'interval', seconds=5)
-    print("启动调度器...")
     scheduler.start()
 
 
