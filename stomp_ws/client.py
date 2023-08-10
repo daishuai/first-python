@@ -59,7 +59,7 @@ class Client:
         self._clean_up()
 
     def _on_error(self, ws_app, error, *args):
-        logging.debug(error)
+        logging.debug(self.ws.url + error)
 
     def _on_message(self, ws_app, message, *args):
         logging.debug("\n<<< " + str(message))

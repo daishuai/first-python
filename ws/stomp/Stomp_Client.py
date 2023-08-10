@@ -21,8 +21,8 @@ headers = {
     'onDisconnectTopic': '/disconnectTopic'
 }
 client.connect(headers=headers)
-id, unsubscribe = client.subscribe(destination='/user/queue/demo-socket/pong', callback=on_receive)
-print(f'id: {id}')
+primary_key, unsubscribe = client.subscribe(destination='/user/queue/demo-socket/pong', callback=on_receive)
+print(f'id: {primary_key}')
 print(type(unsubscribe))
 unsubscribe()
 data = {
